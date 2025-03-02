@@ -75,14 +75,14 @@ const TrackPage: React.FC = () => {
             </div>
           </div>
 
-          <NotificationsPanel />
+          {/* <NotificationsPanel /> */}
           
           <StatusTimeline 
             currentStatus={complaintData.status} 
             progressPercentage={complaintData.progressPercentage} 
           />
           
-          <CommunicationThread />
+          {/* <CommunicationThread /> */}
         </>
       )}
     </div>

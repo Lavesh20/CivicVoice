@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 interface SectionProps {
   title: string;
@@ -65,30 +66,99 @@ const ReviewStep: React.FC = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setIsSubmitting(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      // Prepare form data for submission
+      let submissionData;
       
-      // Generate a random reference number for the complaint
-      const referenceNumber = Math.floor(Math.random() * 1000000)
-        .toString()
-        .padStart(6, '0');
+      if (formState.files.length > 0) {
+        // Use FormData to handle file uploads
+        const formData = new FormData();
+        
+        // Add personal info
+        formData.append('name', formState.personalInfo.name);
+        formData.append('email', formState.personalInfo.email);
+        formData.append('phone', formState.personalInfo.phone);
+        
+        // Add complaint details
+        formData.append('title', formState.complaintDetails.title);
+        formData.append('category', formState.complaintDetails.category);
+        formData.append('description', formState.complaintDetails.description);
+        
+        // Add location data with updated structure
+        formData.append('addressLine1', formState.location.addressLine1);
+        formData.append('addressLine2', formState.location.addressLine2);
+        formData.append('city', formState.location.city);
+        formData.append('state', formState.location.state);
+        formData.append('pincode', formState.location.pincode);
+        
+        // Add files
+        formState.files.forEach((file, index) => {
+          formData.append(`file${index}`, file);
+        });
+        
+        submissionData = formData;
+      } else {
+        // If no files, use JSON
+        submissionData = {
+          personalInfo: formState.personalInfo,
+          complaintDetails: formState.complaintDetails,
+          location: formState.location,
+          files: [] // Empty array since there are no files
+        };
+      }
       
-      // Show toast notification
+      // Set the appropriate headers for the request
+      const config = {
+        headers: formState.files.length > 0 
+          ? { 'Content-Type': 'multipart/form-data' }
+          : { 'Content-Type': 'application/json' }
+      };
+      
+      // Send data to backend API
+      const response = await axios.post(
+        'localhost:3000/api/complaints/submit', 
+        submissionData,
+        config
+      );
+      
+      // Extract reference number from the backend response
+      const { referenceNumber } = response.data;
+      
+      if (!referenceNumber) {
+        throw new Error("Backend did not provide a reference number");
+      }
+      
+      // Show success toast
       toast({
         title: "Complaint Submitted",
         description: "Your complaint has been submitted successfully. Reference #" + referenceNumber,
       });
       
-      // Navigate to the success page with the reference number
+      // Navigate to success page with the reference number from backend
       navigate(`/success?ref=${referenceNumber}`);
-    }, 2000);
+      
+    } catch (error) {
+      // Handle error
+      console.error("Error submitting complaint:", error);
+      
+      let errorMessage = "Failed to submit complaint. Please try again.";
+      if (axios.isAxiosError(error) && error.response) {
+        // Use server provided error message if available
+        errorMessage = error.response.data.message || errorMessage;
+      }
+      
+      toast({
+        title: "Submission Failed",
+        description: errorMessage,
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-
-  // ... keep existing code (the JSX rendering for the review sections)
 
   return (
     <div className="animate-fade-in">
@@ -131,12 +201,14 @@ const ReviewStep: React.FC = () => {
           editAction={() => setCurrentStep(2)}
         >
           <div className="grid gap-2">
-            <p><strong>Address:</strong> {formState.location.address}</p>
-            {formState.location.coordinates && (
-              <p>
-                <strong>Coordinates:</strong> {formState.location.coordinates.lat.toFixed(6)}, {formState.location.coordinates.lng.toFixed(6)}
-              </p>
+            <p><strong>Address Line 1:</strong> {formState.location.addressLine1}</p>
+            {formState.location.addressLine2 && (
+              <p><strong>Address Line 2:</strong> {formState.location.addressLine2}</p>
             )}
+            <p>
+              <strong>City:</strong> {formState.location.city}, <strong>State:</strong> {formState.location.state}
+            </p>
+            <p><strong>Pincode:</strong> {formState.location.pincode}</p>
           </div>
         </Section>
         

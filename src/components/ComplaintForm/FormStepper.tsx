@@ -20,7 +20,7 @@ const FormStepper: React.FC = () => {
     <div className="p-6 pb-0">
       <div className="flex justify-between mb-2">
         {steps.map((step, index) => {
-          const completed = stepCompleted(index);
+          const completed = stepCompleted[index];
           const isActive = currentStep === index;
           const Icon = step.icon;
 
