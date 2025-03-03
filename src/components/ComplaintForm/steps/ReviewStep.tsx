@@ -95,9 +95,10 @@ const ReviewStep: React.FC = () => {
         formData.append('pincode', formState.location.pincode);
         
         // Add files
-        formState.files.forEach((file, index) => {
-          formData.append(`file${index}`, file);
+        formState.files.forEach((file) => {
+          formData.append('files', file);
         });
+        
         
         submissionData = formData;
       } else {
@@ -119,13 +120,15 @@ const ReviewStep: React.FC = () => {
       
       // Send data to backend API
       const response = await axios.post(
-        'localhost:3000/api/complaints/submit', 
+        'http://localhost:5000/api/complaints/submit',       
         submissionData,
         config
       );
       
       // Extract reference number from the backend response
-      const { referenceNumber } = response.data;
+
+      const referenceNumber = response.data.referenceNumber
+      // const { referenceNumber } = referenceResponse.data;
       
       if (!referenceNumber) {
         throw new Error("Backend did not provide a reference number");

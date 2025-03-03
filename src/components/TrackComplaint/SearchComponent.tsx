@@ -4,7 +4,8 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 interface RecentComplaint {
   id: string;
   title: string;
@@ -18,7 +19,7 @@ const SearchComponent = () => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [validationProgress, setValidationProgress] = useState(0);
   const searchRef = useRef<HTMLDivElement>(null);
-  
+  const navigate = useNavigate();
   // Mock recent complaints data
   const recentComplaints: RecentComplaint[] = [
     { id: "CMP-124578", title: "Water supply issue", date: "2 days ago" },
@@ -46,9 +47,20 @@ const SearchComponent = () => {
     }, 200);
   };
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (searchValue.trim()) {
-      validateComplaintId(searchValue);
+      try {
+        
+        const res = await axios.post(`http://localhost:5000/api/complaints/validate/${searchValue}`);
+
+        if (res.data.valid) {
+          navigate(`/track/${searchValue}`);
+        } else {
+          setIsValidId(false);
+        }
+      } catch (error) {
+        setIsValidId(false);
+      }
     }
   };
 

@@ -1,28 +1,50 @@
-import React, { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import SearchComponent from "@/components/TrackComplaint/SearchComponent";
 import StatusTimeline from "@/components/TrackComplaint/StatusTimeline";
-import CommunicationThread from "@/components/TrackComplaint/CommunicationThread";
-import NotificationsPanel from "@/components/TrackComplaint/NotificationsPanel";
 import { Button } from "@/components/ui/button";
 import { Home, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { type Status } from "@/components/TrackComplaint/StatusTimeline";
+import axios from "axios";
 
 const TrackPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const complaintId = searchParams.get("id");
-  
-  // Simulating fetched data for a complaint
-  const [complaintData] = useState({
-    id: complaintId || "CMP-124578",
-    title: "Water supply disruption",
-    status: "investigating" as Status,
-    progressPercentage: 45,
-    category: "Utilities",
-    submittedDate: "May 12, 2023",
-    lastUpdated: "May 15, 2023"
-  });
+  const navigate = useNavigate();
+
+  const [complaintData, setComplaintData] = useState<{
+    id: string;
+    title: string;
+    status: Status;
+    progressPercentage: number;
+    category: string;
+    submittedDate: string;
+    lastUpdated: string;
+  } | null>(null);
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (complaintId) {
+      setLoading(true);
+      axios
+        .get(`/api/complaints/${complaintId}`)
+        .then((response) => {
+          setComplaintData(response.data);
+          setError(null);
+        })
+        .catch((err) => {
+          console.error("Error fetching complaint:", err);
+          setError("Complaint not found. Please check your reference ID.");
+          setComplaintData(null);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [complaintId]);
 
   return (
     <div className="container py-8 px-4 mx-auto">
@@ -52,7 +74,11 @@ const TrackPage: React.FC = () => {
         </div>
       )}
 
-      {(complaintId || true) && (
+      {loading ? (
+        <p className="text-center text-muted-foreground">Loading complaint details...</p>
+      ) : error ? (
+        <p className="text-center text-red-500">{error}</p>
+      ) : complaintData ? (
         <>
           <div className="bg-muted/30 border rounded-lg p-6 mb-8 animate-fade-in">
             <div className="flex flex-col md:flex-row justify-between gap-4">
@@ -75,16 +101,12 @@ const TrackPage: React.FC = () => {
             </div>
           </div>
 
-          {/* <NotificationsPanel /> */}
-          
           <StatusTimeline 
             currentStatus={complaintData.status} 
             progressPercentage={complaintData.progressPercentage} 
           />
-          
-          {/* <CommunicationThread /> */}
         </>
-      )}
+      ) : null}
     </div>
   );
 };
