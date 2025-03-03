@@ -11,6 +11,7 @@ import SubmissionSuccess from "./pages/SubmissionSuccess";
 import TrackPage from "./pages/TrackPage";
 import Dashboard from "./pages/Dashboard";
 
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -24,7 +25,6 @@ const App = () => (
           <Route path="/submit" element={<SubmitComplaint />} /> {/* Placeholder until SubmitComplaint page is created */}
           <Route path="success" element = {<SubmissionSuccess/>} />
           <Route path="/track" element={<TrackPage />} />
-          <Route path="/track/:id" element={<TrackPage />} />
           <Route path="/admin" element={<Dashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

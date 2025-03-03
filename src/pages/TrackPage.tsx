@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SearchComponent from "@/components/TrackComplaint/SearchComponent";
 import StatusTimeline from "@/components/TrackComplaint/StatusTimeline";
 import { Button } from "@/components/ui/button";
@@ -9,10 +9,8 @@ import { type Status } from "@/components/TrackComplaint/StatusTimeline";
 import axios from "axios";
 
 const TrackPage: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  const complaintId = searchParams.get("id");
   const navigate = useNavigate();
-
+  const [referenceNumber, setReferenceNumber] = useState<string>("");
   const [complaintData, setComplaintData] = useState<{
     id: string;
     title: string;
@@ -26,25 +24,31 @@ const TrackPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (complaintId) {
-      setLoading(true);
-      axios
-        .get(`/api/complaints/${complaintId}`)
-        .then((response) => {
-          setComplaintData(response.data);
-          setError(null);
-        })
-        .catch((err) => {
-          console.error("Error fetching complaint:", err);
-          setError("Complaint not found. Please check your reference ID.");
-          setComplaintData(null);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+  const handleSearch = () => {
+    if (!referenceNumber.trim()) {
+      setError("Please enter a reference number.");
+      return;
     }
-  }, [complaintId]);
+
+    setLoading(true);
+    setError(null);
+
+    axios
+      .post(`http://localhost:5000/api/complaints/track`, { referenceNumber })
+      .then((response) => {
+        console.log(response.data)
+        setComplaintData(response.data);
+        setError(null);
+      })
+      .catch((err) => {
+        console.error("Error fetching complaint:", err);
+        setError("Complaint not found. Please check your reference number.");
+        setComplaintData(null);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   return (
     <div className="container py-8 px-4 mx-auto">
@@ -68,11 +72,19 @@ const TrackPage: React.FC = () => {
         </Link>
       </div>
 
-      {!complaintId && (
-        <div className="mb-8">
-          <SearchComponent />
-        </div>
-      )}
+      {/* Reference Number Input */}
+      <div className="mb-8 flex gap-4">
+        <input
+          type="text"
+          placeholder="Enter Reference Number"
+          value={referenceNumber}
+          onChange={(e) => setReferenceNumber(e.target.value)}
+          className="border rounded-lg p-2 w-full"
+        />
+        <Button onClick={handleSearch} variant="default">
+          Track
+        </Button>
+      </div>
 
       {loading ? (
         <p className="text-center text-muted-foreground">Loading complaint details...</p>
