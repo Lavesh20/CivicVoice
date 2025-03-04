@@ -27,7 +27,7 @@ const CTA = () => {
               Get Started Now
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button variant="outline" className="border-white text-white hover:bg-white/10 rounded-lg px-8 py-6 text-lg">
+            <Button variant="outline" className="border-white text-black hover:bg-white/10 rounded-lg px-8 py-6 text-lg">
               Schedule Demo
             </Button>
           </div>

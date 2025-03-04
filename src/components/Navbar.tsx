@@ -49,11 +49,11 @@ const Navbar = () => {
         </div>
         
         {/* Login Button */}
-        <div className="hidden md:block">
+        {/* <div className="hidden md:block">
           <Button className="bg-orange-accent hover:bg-orange-accent/90 text-white">
             Login
           </Button>
-        </div>
+        </div> */}
         
         {/* Mobile Menu Button */}
         <button
