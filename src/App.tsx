@@ -10,6 +10,7 @@ import SubmitComplaint from "./pages/Submit";
 import SubmissionSuccess from "./pages/SubmissionSuccess";
 import TrackPage from "./pages/TrackPage";
 import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
 
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="success" element = {<SubmissionSuccess/>} />
           <Route path="/track" element={<TrackPage />} />
           <Route path="/admin" element={<Dashboard />} />
+          <Route path="/login" element={<Login />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
