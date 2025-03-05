@@ -1,8 +1,26 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Complaint } from '@/services/analyticsService';
 import { CalendarIcon, MapPinIcon, UserIcon } from 'lucide-react';
+
+interface Complaint {
+  _id: string;
+  referenceNumber: string;
+  content_platform: string;
+  content_platform_details: {
+    post_id: string;
+    date: string;
+    content: string;
+    username: string;
+    url: string;
+  };
+  department: string;
+  location: string;
+  name: string;
+  severity: string;
+  summary: string;
+  complaint_score: number;
+}
 
 interface ComplaintCardProps {
   complaint: Complaint;
@@ -23,25 +41,27 @@ const getSeverityColor = (severity: string) => {
 
 const formatDate = (dateString?: string) => {
   if (!dateString) return "Date unavailable";
-  const date = new Date(dateString);
+
+  // Convert "YYYY-MM-DD HH:MM:SS" to "YYYY-MM-DDTHH:MM:SS"
+  const formattedDateString = dateString.replace(" ", "T");  
+
+  const parsedDate = new Date(formattedDateString);
+  
+  if (isNaN(parsedDate.getTime())) {
+    console.warn("Invalid date format:", dateString); // Debugging log
+    return "Invalid date";
+  }
+
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
-  }).format(date);
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true, // Convert to AM/PM format
+  }).format(parsedDate);
 };
 
-// Format location object into a string
-const formatLocation = (location?: { addressLine1?: string; addressLine2?: string; city?: string; state?: string; pincode?: string }): string => {
-    if (!location) return "Unknown Location";
-  
-    return [
-      location
-    ]
-      .filter(Boolean) // Removes empty values
-      .join(", "); // Joins the values with a comma
-  };
-  
 
 const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
   return (
@@ -50,7 +70,7 @@ const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
         <div className="flex justify-between items-start gap-2">
           <Badge 
             variant="outline" 
-            className={`${getSeverityColor(complaint?.severity || "Unknown")} border-0 rounded-md`}
+            className={`${getSeverityColor(complaint?.severity)} border-0 rounded-md`}
           >
             {complaint?.severity || "Unknown"}
           </Badge>
@@ -72,27 +92,27 @@ const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
       
       <CardContent className="pb-2">
         <p className="text-sm text-muted-foreground line-clamp-3">
-          {complaint?.content ? complaint.content.split('\n')[1] || complaint.content : "No content available"}
+          {complaint?.content_platform_details?.content || "No content available"}
         </p>
       </CardContent>
       
       <CardFooter className="flex flex-col items-start space-y-2 text-xs text-muted-foreground pt-0">
-        <div className="w-full flex justify-between items-center">
-          <div className="flex items-center gap-1.5">
-            <MapPinIcon className="h-3.5 w-3.5" />
-            <span>{formatLocation(complaint?.location)}</span>
- {/* Fixed the location issue */}
-          </div>
-          
-          <div className="flex items-center gap-1.5">
-            <UserIcon className="h-3.5 w-3.5" />
-            <span>{complaint?.username || "Anonymous"}</span>
-          </div>
-        </div>
+      <div className="w-full flex justify-between items-center">
+  <div className="flex items-center gap-1.5">
+    <MapPinIcon className="h-3.5 w-3.5" />
+    <span>{typeof complaint?.location === "string" ? complaint?.location : "Unknown Location"}</span>
+  </div>
+
+  <div className="flex items-center gap-1.5">
+    <UserIcon className="h-3.5 w-3.5" />
+    <span>{typeof complaint?.content_platform_details?.username === "string" ? complaint?.content_platform_details?.username : "Anonymous"}</span>
+  </div>
+</div>
+
         
         <div className="flex items-center gap-1.5">
           <CalendarIcon className="h-3.5 w-3.5" />
-          <span>{formatDate(complaint?.date)}</span>
+          <span>{formatDate(complaint?.content_platform_details?.date)}</span>
         </div>
       </CardFooter>
     </Card>
@@ -100,5 +120,3 @@ const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
 };
 
 export default ComplaintCard;
-
-

@@ -8,9 +8,11 @@ interface ComplaintCardProps {
   complaint: Complaint;
 }
 
+
+
 const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const content = complaint.content_platform_details?.content || '';
   // Format date for display
   const formatDate = (dateString: string) => {
     try {
@@ -66,7 +68,7 @@ const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
         </h3>
 
         <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-          {truncateContent(complaint.content)}
+          {truncateContent(content)}
         </p>
 
         <div className="flex items-center gap-2 text-xs text-muted-foreground mt-auto">
@@ -74,7 +76,7 @@ const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
           <span className="truncate">{formatLocation(complaint.location)}</span>
           <span className="ml-auto flex items-center gap-1">
             <Calendar className="h-3 w-3" />
-            {formatDate(complaint.date)}
+            {/* {formatDate(complaint.content_platform_details.date)} */}
           </span>
         </div>
       </div>
@@ -100,20 +102,20 @@ const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
                 <span>{formatLocation(complaint.location)}</span>
                 <span className="ml-auto flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
-                  {formatDate(complaint.date)}
+                  {/* {formatDate(complaint.content_platform_details.date)} */}
                 </span>
               </div>
             </DialogDescription>
           </DialogHeader>
 
           <div className="bg-muted/30 p-4 rounded-lg my-2 max-h-[300px] overflow-y-auto text-sm whitespace-pre-line">
-            {complaint.content}
+            {/* {complaint.content_platform_details.content} */}
           </div>
 
           <div className="grid grid-cols-2 gap-2 my-2">
             <div className="p-3 rounded-lg bg-muted/30">
               <div className="text-xs text-muted-foreground">Username</div>
-              <div className="font-medium">{complaint.username}</div>
+              {/* <div className="font-medium">{complaint.content_platform_details.username}</div> */}
             </div>
             <div className="p-3 rounded-lg bg-muted/30">
               <div className="text-xs text-muted-foreground">Complaint Score</div>
@@ -130,8 +132,8 @@ const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
               <Share2 className="h-4 w-4" />
               Share
             </Button>
-            <a 
-              href={complaint.url} 
+            {/* <a 
+              href={complaint.content_platform_details.url} 
               target="_blank" 
               rel="noopener noreferrer"
             >
@@ -139,7 +141,7 @@ const ComplaintCard: React.FC<ComplaintCardProps> = ({ complaint }) => {
                 <ExternalLink className="h-4 w-4" />
                 View Source
               </Button>
-            </a>
+            </a> */}
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -30,6 +30,8 @@ async function connectToMongo() {
     }
   }
   
+// API route to submit a new complaint
+
 
 // API route to fetch complaints
 app.get('/api/complaints', async (req, res) => {
@@ -51,6 +53,8 @@ app.get('/api/complaints', async (req, res) => {
       res.status(500).json({ error: 'Failed to fetch complaints' });
     }
   });
+
+
   
 // Start the server
 app.listen(PORT, async () => {
