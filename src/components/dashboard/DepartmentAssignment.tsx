@@ -24,8 +24,19 @@ import {
   LineChart,
   Line
 } from "recharts";
+import { useQuery } from '@tanstack/react-query';
+import { 
+  fetchComplaints, 
+  getSeverityStats, 
+  getDepartmentStats, 
+  getLocationStats,
+  getPlatformStats,
+  getTimelineData
+} from '@/services/analyticsService';
 import { Briefcase, Users, TrendingUp, BarChart as BarChartIcon, PlusCircle, ChevronsRight, AlertTriangle } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import ComplaintCard from "../Analytics/ComplaintCart";
+import { Skeleton } from "../ui/skeleton";
 
 // Types for department data
 interface Department {
@@ -731,7 +742,7 @@ const DepartmentAssignment = () => {
       </Card>
       
       {/* Complaints Table */}
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Pending Complaints</CardTitle>
           <CardDescription>Citizen complaints waiting to be assigned to staff members</CardDescription>
@@ -795,10 +806,10 @@ const DepartmentAssignment = () => {
             </TableBody>
           </Table>
         </CardContent>
-      </Card>
+      </Card> */}
       
       {/* Assignment Sheet/Drawer */}
-      <AssignmentDialog open={assignmentSheetOpen} onOpenChange={setAssignmentSheetOpen}>
+      {/* <AssignmentDialog open={assignmentSheetOpen} onOpenChange={setAssignmentSheetOpen}>
         <AssignmentDialogContent className="sm:max-w-md">
           <AssignmentDialogHeader>
             <AssignmentDialogTitle>Assign Complaint</AssignmentDialogTitle>
@@ -877,10 +888,10 @@ const DepartmentAssignment = () => {
             </AssignmentDialogFooter>
           )}
         </AssignmentDialogContent>
-      </AssignmentDialog>
+      </AssignmentDialog> */}
       
       {/* New Complaint Dialog */}
-      <Dialog open={newComplaintOpen} onOpenChange={setNewComplaintOpen}>
+      {/* <Dialog open={newComplaintOpen} onOpenChange={setNewComplaintOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Register New Complaint</DialogTitle>
@@ -980,7 +991,12 @@ const DepartmentAssignment = () => {
             <Button onClick={addNewComplaint}>Register Complaint</Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
+      <div>
+        
+      </div>
+
+      
     </div>
   );
 };
