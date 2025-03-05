@@ -23,7 +23,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 const DepartmentChart: React.FC<DepartmentChartProps> = ({ data }) => {
   // Limit to top 5 departments for better visualization
-  const topDepartments = data.slice(0, 5).map(item => ({
+  const topDepartments = data.slice(0, 10).map(item => ({
     ...item,
     // Truncate long department names
     name: item.name.length > 30 ? item.name.substring(0, 27) + '...' : item.name

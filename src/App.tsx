@@ -11,7 +11,7 @@ import SubmissionSuccess from "./pages/SubmissionSuccess";
 import TrackPage from "./pages/TrackPage";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
-import Analytics from "./pages/Analytics";
+import Analytics from "./pages/Complaints";
 import Analyse from "./pages/Analyse";
 
 
@@ -30,7 +30,7 @@ const App = () => (
           <Route path="/track" element={<TrackPage />} />
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/complaints" element={<Analytics />} />
           <Route path="/analyse" element={<Analyse />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

@@ -35,7 +35,7 @@ import {
 } from '@/services/analyticsService';
 import { Briefcase, Users, TrendingUp, BarChart as BarChartIcon, PlusCircle, ChevronsRight, AlertTriangle } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import ComplaintCard from "../Analytics/ComplaintCart";
+import ComplaintCard from "../Complaints/ComplaintCart";
 import { Skeleton } from "../ui/skeleton";
 
 // Types for department data

@@ -11,10 +11,10 @@ import {
 } from '../services/analyticsService';
 
 import { Skeleton } from '../components/ui/skeleton';
-import AnalyticsHeader from '../components/Analytics/AnalyticsHeader';
-import SeverityChart from '../components/Analytics/SeverityChart';
-import DepartmentChart from '../components/Analytics/DepartmentChart';
-import LocationMap from '../components/Analytics/LocationMap';
+import AnalyticsHeader from '../components/Complaints/AnalyticsHeader';
+import SeverityChart from '../components/Complaints/SeverityChart';
+import DepartmentChart from '../components/Complaints/DepartmentChart';
+import LocationMap from '../components/Complaints/LocationMap';
 import ComplaintFilter from '@/components/Analyse/ComplaintFilter';
 import PlatformChart from '@/components/Analyse/PlatformChart';
 import SentimentGauge from '@/components/Analyse/SentimentGauge';
